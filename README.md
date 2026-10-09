@@ -65,3 +65,42 @@ During this lab you will:
 - When debugging, print tokens, scores, or intermediate choices.
 - Ask an AI assistant to help create edge case posts or unusual wording.
 - Try examples that mislead or confuse your model. Failure cases teach you the most.
+
+## Observations
+```
+=== Interactive Mood Machine (ML model) ===
+Type a sentence to analyze its mood.
+Type 'quit' or press Enter on an empty line to exit.
+
+You: Today is Thursday
+ML model: negative
+
+why is it negative?
+```
+
+Because the ML model is not “understanding” the sentence as a human would. It is learning from the tiny dataset using bag-of-words features.
+
+What’s happening:
+- The model turns text into word counts.
+- It learns which words were associated with each label in your training set.
+- In the dataset, the word “today” appears in a clearly negative example:
+"Today was a terrible day"
+- Since the training set is very small, that one negative association can bias the model.
+- The sentence "Today is Thursday" contains "today", so the classifier sees a strong negative cue and predicts negative.
+
+This is a classic small-dataset problem:
+- few examples
+- a lot of vocabulary is missing
+- the model overfits to accidental word patterns
+- neutral phrases can get pushed into a sentiment class
+
+So:
+- "Today is Thursday" is obviously neutral to a person
+- but the ML model is not reasoning about meaning
+- it is guessing from word frequencies and weak correlations
+
+This is exactly why the rule-based model and the ML model often disagree or produce strange outputs on short, neutral sentences.
+
+In short: it predicts negative because of the training data, not because "Thursday" is inherently negative.
+
+![screenshot of ML Model](images/Screenshot%202026-10-08%20213252.png)
