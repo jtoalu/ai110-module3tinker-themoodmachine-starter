@@ -121,3 +121,11 @@ Possible directions:
 - Use a small neural network or transformer model  
 - Improve the rule based scoring method  
 - Add a real test set instead of training accuracy only
+
+## 9. Machine Learning in Python
+- Simple and efficient tools for predictive data analysis
+- Accessible to everybody, and reusable in various contexts
+- Built on NumPy, SciPy, and matplotlib
+- Open source, commercially usable - BSD license
+
+[Machine Learning in Python](https://scikit-learn.org/stable/index.html)
