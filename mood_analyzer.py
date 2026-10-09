@@ -9,6 +9,7 @@ This class starts with very simple logic:
   - Convert that score into a mood label
 """
 
+import token
 from typing import List, Dict, Tuple, Optional
 
 from dataset import POSITIVE_WORDS, NEGATIVE_WORDS
@@ -68,22 +69,30 @@ class MoodAnalyzer:
         Positive words increase the score.
         Negative words decrease the score.
 
-        TODO: You must choose AT LEAST ONE modeling improvement to implement.
-        For example:
-          - Handle simple negation such as "not happy" or "not bad"
-          - Count how many times each word appears instead of just presence
-          - Give some words higher weights than others (for example "hate" < "annoyed")
-          - Treat emojis or slang (":)", "lol", "💀") as strong signals
+        This version handles a simple negation pattern, examples:
+          - "not happy" -> negative
+          - "never fun" -> negative
         """
-        # TODO: Implement this method.
-        #   1. Call self.preprocess(text) to get tokens.
-        #   2. Loop over the tokens.
-        #   3. Increase the score for positive words, decrease for negative words.
-        #   4. Return the total score.
-        #
-        # Hint: if you implement negation, you may want to look at pairs of tokens,
-        # like ("not", "happy") or ("never", "fun").
-        pass
+        tokens = self.preprocess(text)
+        score = 0
+        negators = {"not", "never", "no"}
+
+        for index, token in enumerate(tokens):
+            is_positive = token in self.positive_words
+            is_negative = token in self.negative_words
+
+            # Skip words that are neutral or appear in both lists.
+            if is_positive == is_negative:
+                continue
+
+            word_score = 1 if is_positive else -1
+
+            if index > 0 and tokens[index - 1] in negators:
+                word_score *= -1
+
+            score += word_score
+
+        return score
 
     # ---------------------------------------------------------------------
     # Label prediction
@@ -96,21 +105,26 @@ class MoodAnalyzer:
         The default mapping is:
           - score > 0  -> "positive"
           - score < 0  -> "negative"
+          - both positive and negative words present -> "mixed"
           - score == 0 -> "neutral"
-
-        TODO: You can adjust this mapping if it makes sense for your model.
-        For example:
-          - Use different thresholds (for example score >= 2 to be "positive")
-          - Add a "mixed" label for scores close to zero
-        Just remember that whatever labels you return should match the labels
-        you use in TRUE_LABELS in dataset.py if you care about accuracy.
         """
-        # TODO: Implement this method.
-        #   1. Call self.score_text(text) to get the numeric score.
-        #   2. Return "positive" if the score is above 0.
-        #   3. Return "negative" if the score is below 0.
-        #   4. Return "neutral" otherwise.
-        pass
+
+        tokens = self.preprocess(text)
+        score = self.score_text(text)
+
+        print(f"\nTokens: {tokens} | Score: {score}")
+        print(self.explain(text))
+
+        has_positive = any(token in self.positive_words for token in tokens)
+        has_negative = any(token in self.negative_words for token in tokens)
+
+        if score > 0:
+            return "positive"
+        if score < 0:
+            return "negative"
+        if has_positive and has_negative:
+            return "mixed"
+        return "neutral"
 
     # ---------------------------------------------------------------------
     # Explanations (optional but recommended)
