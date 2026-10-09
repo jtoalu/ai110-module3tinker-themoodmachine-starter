@@ -77,9 +77,9 @@ def run_interactive_loop() -> None:
 
         label = analyzer.predict_label(user_input)
         # If explain() is implemented, you can include an explanation:
-        # reason = analyzer.explain(user_input)
-        # print(f"Model: {label} ({reason})")
-        print(f"Model: {label}")
+        reason = analyzer.explain(user_input)
+        print(f"Model: {label} ({reason})\n")
+        # print(f"Model: {label}\n")
 
 
 if __name__ == "__main__":
